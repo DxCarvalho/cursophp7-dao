@@ -7,6 +7,7 @@ class usuario {
 	private $dessenha;
 	private $dtcadastro;
 
+
 	public function getIdusuario(){
 		return $this->idusuario;
 	}
@@ -35,22 +36,59 @@ class usuario {
 		$this->dtcadastro = $value;
 	}
 
-	public function loadById($id){
+	public static function getList(){
+		$sql = new sql();
+
+		return $sql->select("SELECT * FROM tb_usuarios ORDER BY deslogin");
+
+	}
+
+	public static function search($login){
 
 		$sql = new sql();
 
-		$results = $sql->select("SELECT * FROM tb_usuarios WHERE idusuario = :ID", array( ":ID"=>$id));
+		return $sql->select("SELECT * FROM tb_usuarios WHERE deslogin LIKE :SEARCH;", array(":SEARCH"=>"%".$login."%"));
+		
+	}
 
-		//if(isset($results[0])) ou 
+	public function login($login, $password){
+
+		$sql = new sql();
+
+		$results = $sql->select("SELECT * FROM tb_usuarios WHERE deslogin = :USER AND dessenha = :PASS;", array(":USER"=>$login, ":PASS"=> $password));
 
 		if(count($results) > 0){
 
 			$row = $results[0];
 
-			$this->setIdusuario($row['idusuario']);
-			$this->setDeslogin($row['deslogin']);
-			$this->setDessenha($row['dessenha']);
-			$this->setDtcadastro( new Datetime($row['dtcadastro']));
+				$this->setIdusuario($row["idusuario"]);
+				$this->setDeslogin($row["deslogin"]);
+				$this->setDessenha($row["dessenha"]);
+				$this->setDtcadastro(new Datetime($row["dtcadastro"]));
+
+		}else{
+
+			throw new Exception("Usuário ou/a Senha inválida!");
+			
+		}
+
+	}
+
+
+	public function loadByID($id){
+
+		$sql = new sql();
+
+		$results = $sql->select("SELECT * FROM tb_usuarios WHERE idusuario = :ID", array(":ID"=>$id));
+
+		if(count($results) > 0){
+
+			$row = $results[0];
+
+			$this->setIdusuario($row["idusuario"]);
+			$this->setDeslogin($row["deslogin"]);
+			$this->setDessenha($row["dessenha"]);
+			$this->setDtcadastro(new Datetime($row["dtcadastro"]));
 
 		}
 	}
@@ -61,9 +99,9 @@ class usuario {
 			"deslogin"=>$this->getDeslogin(),
 			"dessenha"=>$this->getDessenha(),
 			"dtcadastro"=>$this->getDtcadastro()->format("d/m/Y H:i:s")
+
 		));
 	}
-
 
 }
 
