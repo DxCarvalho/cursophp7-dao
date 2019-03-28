@@ -28,14 +28,20 @@ require_once("config.php");
 //echo $user;
 
 //INSERT para colocar usuário no banco de dados
-//$aluno = new usuario("Snoopy Dog", '1au2au3au');
+//$aluno = new usuario('Cachorro', '1au2au3au');
 //$aluno->insert();
 //echo $aluno;
 
-//UPDATE inserindo arquivos 
+//UPDATE alterar usuario arquivos 
+/*$user = new usuario();
+$user->loadByID(8);
+$user->update("Dog Dog", "atacar");
+echo $user;*/
+
+//UPDATE alterar usuario arquivos 
 $user = new usuario();
-$user->loadByID(7);
-$user->update("Snoopy Dog Dog", "shitzu");
+$user->loadByID(8);
+$user->delete();
 echo $user;
 
 ?>

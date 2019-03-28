@@ -96,30 +96,41 @@ class usuario {
 
 		$sql = new sql();
 
-			$results = $sql->select("CALL sp_usuarios_insert(:LOGIN, :PASSWORD)", array(
-				":LOGIN"=>$this->getDeslogin(),
-				":PASSWORD"=>$this->getDessenha()
-			));
+		$results = $sql->select("CALL sp_usuarios_insert(:LOGIN, :PASSWORD)", array(
+			":LOGIN"=>$this->getDeslogin(),
+			":PASSWORD"=>$this->getDessenha()
+		));
 
-			if(count($results) > 0){
+		if(count($results) > 0){
+			$this->setData($results[0]);
+		}
 
-				$this->setData($results[0]);
-			}
 	}
 
 	public function update($login, $password){
-		
 		$this->setDeslogin($login);
 		$this->setDessenha($password);
 
 		$sql = new sql();
 
-		$sql->query("UPDATE tb_usuarios SET deslogin = :LOGIN AND dessenha = :PASS WHERE idusuario = :ID;", array(
+		$sql->query("UPDATE tb_usuarios SET deslogin = :LOGIN, dessenha = :PASS WHERE idusuario = :ID;", array(
 			":LOGIN"=>$this->getDeslogin(),
 			":PASS"=>$this->getDessenha(),
 			":ID"=>$this->getIdusuario()
 		));
+	}
 
+	public function delete(){
+		$sql = new sql();
+
+		$sql->query("DELETE FROM tb_usuarios WHERE idusuario = :ID", array(
+			":ID"=>$this->getIdusuario()
+		));
+
+		$this->setIdusuario(0);
+		$this->setDeslogin("");
+		$this->setDessenha("");
+		$this->setDtcadastro(new Datetime());
 	}
 
 	public function __construct($login = "", $password = ""){
